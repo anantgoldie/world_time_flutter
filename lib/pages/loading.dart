@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:world_time/pages/home.dart';
+import 'package:world_time/services/world_time.dart';
 
 class Loading extends StatefulWidget {
+  static const routeName = '/loading';
+
   @override
   _LoadingState createState() => _LoadingState();
 }
 
 class _LoadingState extends State<Loading> {
-  void getLocationData() async {
-    print("start");
-    http.Response response = await http.get(
-        "https://jsonplaceholder.typicode.com/todos/1",
-        headers: {"accept": "Application/json"});
+  String time = "Loading ...";
 
-    print(response.body);
+  void getTimeByLocation() async {
+    WorldTime timeInIndia =
+        WorldTime(location: "Kolkata", flag: "india.png", url: "Asia/Kolkata");
+    await timeInIndia.getTime();
+    Navigator.pushReplacementNamed(context, Home.routeName, arguments: timeInIndia);
   }
 
   @override
   void initState() {
     super.initState();
-    getLocationData();
+    getTimeByLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("loading screen."),
+      body: Padding(
+        padding: const EdgeInsets.all(50.0),
+        child: Text(time),
+      ),
     );
   }
 }
